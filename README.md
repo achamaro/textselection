@@ -1,4 +1,3 @@
 selectiontext
 selectiontext
-selectiontext
 =============
