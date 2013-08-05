@@ -124,7 +124,6 @@
 			}
 			
 			, select: function (start, end) {
-				console.log(start, end);
 				if (start === undefined) {
 					start = this.start;
 				}
