@@ -4,17 +4,17 @@
 	$.textSelection.enable = true;
 	var api = $.textSelection.api = {};
 	
-	api.get = function() {
-		var str;
+	api.get = function(all) {
+		var str = [];
 		
 		api.callback.call(this, function(range) {
-			str = range.text;
+			str.push(range.text);
 			range.select();
 			
-			return false;
+			return !!all;
 		});
 		
-		return str;
+		return all ? str: str[0];
 	};
 	
 	api.replace = function(reg, rep) {
@@ -160,6 +160,10 @@
 		if (typeof cmd == "function") {
 			args = [ cmd ];
 			cmd = 'callback';
+		}
+		if (cmd === true) {
+			args = [ true ];
+			cmd = 'get';
 		}
 		
 		return api[ cmd || 'get' ].apply( this, args );
