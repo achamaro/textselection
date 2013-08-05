@@ -12,5 +12,26 @@
 <div id="qunit-fixture"></div>
 <script src="http://code.jquery.com/qunit/qunit-git.js"></script>
 <script src="test.js"></script>
+<script>
+$(function() {
+	
+	$textarea = $('textarea');
+	
+	$prepend = $('<input type="text">').appendTo('body');
+	$('<input type="button" value="prepend">').appendTo('body').click(function() {
+		$textarea.textSelection('prepend', $prepend.val());
+	});
+	$('<input type="button" value="get">').appendTo('body').click(function() {
+		alert( $textarea.textSelection(true) );
+	});
+	
+	$('<input type="button" value="focus1">').appendTo('body').click(function() {
+		$textarea.eq(0).focus();
+	});
+	$('<input type="button" value="focus2">').appendTo('body').click(function() {
+		$textarea.eq(1).focus();
+	});
+});
+</script>
 </body>
 </html>
