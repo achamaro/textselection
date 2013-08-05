@@ -74,6 +74,7 @@
 			setText: function(str) {
 				var val = $(this.elem).val();
 				$(this.elem).val( val.substr(0, this.start) + str + val.substr(this.end) );
+				this.text = str;
 				this.end = this.start + str.length;
 			}
 			
@@ -117,6 +118,7 @@
 		Range.prototype = {
 			
 			setText: function(str) {
+				this.text = str;
 				this.range.text = str;
 				this.end = this.start + str.length;
 			}
