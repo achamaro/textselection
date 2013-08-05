@@ -79,21 +79,13 @@
 			}
 			
 			, select: function(start, end) {
-				if (start !== undefined) {
+				if (!isNaN( start )) {
 					this.start = start;
 				}
-				if (end !== undefined) {
+				if (!isNaN( end )) {
 					this.end = end;
 				}
 				this.elem.setSelectionRange(this.start, this.end);
-			}
-			
-			, toStart: function() {
-				this.select(this.start, this.start);
-			}
-			
-			, toEnd: function() {
-				this.select(this.end, this.end);
 			}
 		};
 	}
@@ -101,57 +93,63 @@
 		
 		Range = function(elem) {
 			this.elem = elem;
-			elem.focus();
-			
-			this.range = document.selection.createRange();
-			
-			this.text = this.range.text;
-			
-			var clone = this.range.duplicate();
-			clone.moveToElementText( elem );
-			clone.setEndPoint( 'EndToEnd', this.range );
-			
-			this.start = clone.text.length - this.text.length;
-			this.end   = this.start + this.text.length;
+			this.init();
 		}
 		
 		Range.prototype = {
 			
-			setText: function(str) {
+			init: function() {
+				this.elem.focus();
+				
+				this.range = document.selection.createRange();
+				
+				this.text = this.range.text;
+				
+				var clone = this.range.duplicate();
+				clone.moveToElementText( this.elem );
+				clone.setEndPoint( 'EndToEnd', this.range );
+				
+				this.start = clone.text.replace(/\r/g, '').length - this.text.replace(/\r/g, '').length;
+				this.end   = this.start + this.text.replace(/\r/g, '').length;
+			}
+			
+			, setText: function(str) {
 				this.text = str;
 				this.range.text = str;
-				this.end = this.start + str.length;
+				this.end = this.start + str.replace(/\r/g, '').length;
 			}
 			
 			, select: function (start, end) {
-				if (start === undefined) {
+				if (isNaN( start )) {
 					start = this.start;
 				}
-				if (end === undefined) {
+				if (isNaN( end )) {
 					end = this.end;
 				}
 				
-				this.range.moveEnd( 'character', end - this.end );
-				this.range.moveStart( 'character', start - this.start );
+				var range = this.elem.createTextRange();
+				range.collapse();
+				range.moveEnd( 'character', end );
+				range.moveStart( 'character', start );
+				range.select();
 				
-				this.range.select();
-				
-				this.start = start;
-				this.end   = end;
-			}
-			
-			, toStart: function() {
-				this.select( this.start, this.start );
-			}
-			
-			, toEnd: function() {
-				this.select( this.end, this.end );
+				this.init();
 			}
 		};
 	}
 	else {
+		Range = function() {};
 		$.textSelection.enabled = false;
 	}
+	
+	var prot = Range.prototype;
+	prot.toStart = function() {
+		this.select( this.start, this.start );
+	};
+	
+	prot.toEnd = function() {
+		this.select( this.end, this.end );
+	};
 	
 	$.fn.textSelection = function(cmd) {
 		var args = Array.prototype.slice.call(arguments, 1);
