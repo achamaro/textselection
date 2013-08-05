@@ -1,4 +1,2 @@
-selectiontext
-selectiontext
-selectiontext
+textSelection
 =============
